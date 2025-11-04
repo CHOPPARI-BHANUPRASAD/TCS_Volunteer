@@ -1,11 +1,20 @@
--- Drop existing database if exists
+-- ==========================================================
+-- Volunteer Connect Database Schema
+-- Author: Bhanuprasad
+-- Purpose: Defines all tables and relationships
+-- ==========================================================
+
+-- Drop existing database if exists (to reset everything)
 DROP DATABASE IF EXISTS volunteer_connect_db;
 
--- Create database
+-- Create new database
 CREATE DATABASE volunteer_connect_db;
 USE volunteer_connect_db;
 
+-- ==========================================================
 -- Table: volunteers
+-- Stores information about individual volunteers
+-- ==========================================================
 CREATE TABLE volunteers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -15,10 +24,13 @@ CREATE TABLE volunteers (
     location VARCHAR(100),
     bio TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_email (email)
+    INDEX idx_email (email) -- for faster lookup by email
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- ==========================================================
 -- Table: organizations
+-- Stores information about registered organizations
+-- ==========================================================
 CREATE TABLE organizations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -31,14 +43,20 @@ CREATE TABLE organizations (
     INDEX idx_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- ==========================================================
 -- Table: skills
+-- Stores a list of unique skills that volunteers may have
+-- ==========================================================
 CREATE TABLE skills (
     id INT AUTO_INCREMENT PRIMARY KEY,
     skill_name VARCHAR(50) UNIQUE NOT NULL,
     INDEX idx_skill_name (skill_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Table: volunteer_skills (Many-to-Many junction table)
+-- ==========================================================
+-- Table: volunteer_skills (Many-to-Many Relationship)
+-- Links volunteers and their skills
+-- ==========================================================
 CREATE TABLE volunteer_skills (
     volunteer_id INT NOT NULL,
     skill_id INT NOT NULL,
@@ -49,7 +67,10 @@ CREATE TABLE volunteer_skills (
     INDEX idx_skill (skill_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- ==========================================================
 -- Table: opportunities
+-- Stores volunteer opportunities posted by organizations
+-- ==========================================================
 CREATE TABLE opportunities (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
@@ -67,7 +88,10 @@ CREATE TABLE opportunities (
     INDEX idx_event_date (event_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- ==========================================================
 -- Table: applications
+-- Tracks volunteer applications for specific opportunities
+-- ==========================================================
 CREATE TABLE applications (
     id INT AUTO_INCREMENT PRIMARY KEY,
     volunteer_id INT NOT NULL,
@@ -84,16 +108,26 @@ CREATE TABLE applications (
     INDEX idx_status (status)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Insert sample skills
+-- ==========================================================
+-- Insert: Sample Skills
+-- Preload common volunteer skills for demonstration
+-- ==========================================================
 INSERT INTO skills (skill_name) VALUES 
 ('Teaching'), ('Healthcare'), ('Event Management'), ('Social Media'),
 ('Fundraising'), ('Counseling'), ('IT Support'), ('Cooking'),
 ('Construction'), ('Environmental Cleanup'), ('Animal Care'), ('Translation');
 
--- Insert sample organization
+-- ==========================================================
+-- Insert: Sample Organization
+-- Creates one default organization entry
+-- ==========================================================
 INSERT INTO organizations (name, email, password, description, location) VALUES
 ('Community Help Center', 'admin@community.org', '$2b$10$dummyhashforpassword', 'Helping local communities', 'Mumbai');
 
--- Insert sample opportunities
+-- ==========================================================
+-- Insert: Sample Opportunities (Optional)
+-- You can insert directly below or through the web app
+-- ==========================================================
 INSERT INTO opportunities (title, description, organization_id, location, event_date, event_time, required_skills, status) VALUES
--- if we want to add from here we can add or insert direct opportunities from application
+-- If you want, add entries manually here or insert via application
+;

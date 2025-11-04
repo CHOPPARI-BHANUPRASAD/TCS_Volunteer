@@ -1,4 +1,7 @@
-/* Design System Variables */
+/* ================================
+   🎨 DESIGN SYSTEM VARIABLES
+   (Defines global color palette, spacing, and typography)
+=================================== */
 :root {
   --color-white: rgba(255, 255, 255, 1);
   --color-cream-50: rgba(252, 252, 249, 1);
@@ -11,7 +14,8 @@
   --color-teal-500: rgba(33, 128, 141, 1);
   --color-teal-600: rgba(29, 116, 128, 1);
   --color-teal-700: rgba(26, 104, 115, 1);
-  
+
+  /* Theming variables */
   --color-background: var(--color-cream-50);
   --color-surface: var(--color-cream-100);
   --color-text: var(--color-slate-900);
@@ -19,7 +23,8 @@
   --color-primary: var(--color-teal-500);
   --color-primary-hover: var(--color-teal-600);
   --color-border: rgba(94, 82, 64, 0.2);
-  
+
+  /* Global fonts and spacing */
   --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --radius-base: 8px;
   --radius-lg: 12px;
@@ -28,6 +33,9 @@
   --space-24: 24px;
 }
 
+/* ================================
+   🧱 GLOBAL STYLES
+=================================== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -47,7 +55,9 @@ body {
   padding: 0 var(--space-16);
 }
 
-/* Navbar */
+/* ================================
+   🧭 NAVBAR STYLING
+=================================== */
 .navbar {
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
@@ -78,7 +88,9 @@ body {
   color: var(--color-text);
 }
 
-/* Buttons */
+/* ================================
+   🔘 BUTTON STYLES
+=================================== */
 .btn {
   display: inline-block;
   padding: 10px 20px;
@@ -125,7 +137,9 @@ body {
   width: 100%;
 }
 
-/* Hero Section */
+/* ================================
+   🏠 HERO SECTION (Homepage Banner)
+=================================== */
 .hero {
   text-align: center;
   padding: 80px var(--space-16);
@@ -151,7 +165,9 @@ body {
   flex-wrap: wrap;
 }
 
-/* Features Section */
+/* ================================
+   🌟 FEATURES SECTION
+=================================== */
 .features {
   padding: 60px var(--space-16);
 }
@@ -168,7 +184,9 @@ body {
   gap: var(--space-24);
 }
 
-/* Cards */
+/* ================================
+   🪪 CARD COMPONENT
+=================================== */
 .card {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
@@ -191,7 +209,9 @@ body {
   font-size: 20px;
 }
 
-/* Forms */
+/* ================================
+   📝 FORM ELEMENTS
+=================================== */
 .form-group {
   margin-bottom: var(--space-16);
 }
@@ -223,7 +243,9 @@ textarea.form-control {
   font-family: inherit;
 }
 
-/* Auth Container */
+/* ================================
+   🔐 AUTH (LOGIN & REGISTER) PAGES
+=================================== */
 .auth-container {
   min-height: calc(100vh - 80px);
   display: flex;
@@ -259,6 +281,7 @@ textarea.form-control {
   border-bottom-color: var(--color-primary);
 }
 
+/* User type switcher (Volunteer / Organization) */
 .user-type-selector {
   display: flex;
   gap: var(--space-8);
@@ -297,7 +320,9 @@ textarea.form-control {
   text-align: center;
 }
 
-/* Dashboard */
+/* ================================
+   🧭 DASHBOARD LAYOUT
+=================================== */
 .dashboard-container {
   display: grid;
   grid-template-columns: 250px 1fr;
@@ -306,6 +331,7 @@ textarea.form-control {
   min-height: calc(100vh - 80px);
 }
 
+/* Sidebar menu for navigation */
 .sidebar {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
@@ -343,12 +369,14 @@ textarea.form-control {
   color: white;
 }
 
+/* Main content area */
 .main-content {
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   padding: var(--space-24);
 }
 
+/* Section header with title + actions */
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -358,6 +386,7 @@ textarea.form-control {
   gap: var(--space-16);
 }
 
+/* Search bar and filter buttons */
 .search-bar {
   display: flex;
   gap: var(--space-8);
@@ -371,7 +400,9 @@ textarea.form-control {
   margin-bottom: var(--space-16);
 }
 
-/* Opportunities Grid */
+/* ================================
+   📋 OPPORTUNITIES GRID + CARDS
+=================================== */
 .opportunities-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -405,7 +436,9 @@ textarea.form-control {
   margin-top: var(--space-16);
 }
 
-/* Status Badge */
+/* ================================
+   🏷️ STATUS BADGES
+=================================== */
 .status {
   display: inline-block;
   padding: 4px 12px;
@@ -434,7 +467,9 @@ textarea.form-control {
   color: var(--color-teal-700);
 }
 
-/* Modal */
+/* ================================
+   🪟 MODAL STYLING
+=================================== */
 .modal {
   position: fixed;
   top: 0;
@@ -463,7 +498,9 @@ textarea.form-control {
   margin-top: var(--space-16);
 }
 
-/* Footer */
+/* ================================
+   ⚓ FOOTER
+=================================== */
 .footer {
   text-align: center;
   padding: var(--space-24);
@@ -472,7 +509,9 @@ textarea.form-control {
   margin-top: 40px;
 }
 
-/* Responsive */
+/* ================================
+   📱 RESPONSIVE DESIGN (Mobile view)
+=================================== */
 @media (max-width: 768px) {
   .dashboard-container {
     grid-template-columns: 1fr;

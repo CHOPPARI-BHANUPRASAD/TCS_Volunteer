@@ -4,20 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volunteer Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Linking external CSS file -->
 </head>
 <body>
+    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="container">
             <h1 class="logo"> Volunteer Connect</h1>
             <div class="nav-links">
+                <!-- Display logged-in user's name -->
                 <span id="userName" class="user-name"></span>
+                <!-- Logout button -->
                 <button onclick="logout()" class="btn btn--secondary btn--sm">Logout</button>
             </div>
         </div>
     </nav>
 
+    <!-- Dashboard Layout -->
     <div class="dashboard-container container">
+        <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <nav class="sidebar-nav">
                 <button class="sidebar-link active" data-section="opportunities"> Browse Opportunities</button>
@@ -26,16 +31,20 @@
             </nav>
         </aside>
 
+        <!-- Main Content Area -->
         <main class="main-content">
             <!-- Opportunities Section -->
             <section id="opportunities" class="dashboard-section">
                 <div class="section-header">
                     <h2>Available Opportunities</h2>
+                    <!-- Search bar for filtering opportunities -->
                     <div class="search-bar">
                         <input type="text" id="searchInput" placeholder="Search opportunities..." class="form-control">
                         <button onclick="searchOpportunities()" class="btn btn--primary">Search</button>
                     </div>
                 </div>
+
+                <!-- Dropdown filter for locations -->
                 <div class="filters">
                     <select id="locationFilter" class="form-control">
                         <option value="">All Locations</option>
@@ -44,35 +53,43 @@
                         <option value="Bangalore">Bangalore</option>
                     </select>
                 </div>
+
+                <!-- Dynamic list of opportunities will be loaded here -->
                 <div id="opportunitiesList" class="opportunities-grid"></div>
             </section>
 
             <!-- My Applications Section -->
             <section id="my-applications" class="dashboard-section hidden">
                 <h2>My Applications</h2>
+                <!-- List of volunteer’s applications -->
                 <div id="applicationsList" class="applications-list"></div>
             </section>
 
             <!-- Profile Section -->
             <section id="profile" class="dashboard-section hidden">
                 <h2>My Profile</h2>
+                <!-- Profile details will be displayed here -->
                 <div id="profileContent" class="profile-content"></div>
             </section>
         </main>
     </div>
 
-    <!-- Application Modal -->
+    <!-- Application Modal (Popup for applying to opportunities) -->
     <div id="applicationModal" class="modal hidden">
         <div class="modal-content card">
             <div class="card__body">
+                <!-- Modal title and body -->
                 <h3 id="modalTitle"></h3>
                 <div id="modalBody"></div>
+
+                <!-- Application Form -->
                 <form id="applicationForm">
                     <div class="form-group">
                         <label class="form-label">Why do you want to volunteer?</label>
                         <textarea class="form-control" id="applicationMessage" rows="4" required></textarea>
                     </div>
                     <div class="modal-actions">
+                        <!-- Modal buttons -->
                         <button type="button" onclick="closeModal()" class="btn btn--secondary">Cancel</button>
                         <button type="submit" class="btn btn--primary">Submit Application</button>
                     </div>
@@ -81,6 +98,7 @@
         </div>
     </div>
 
+    <!-- Linking JavaScript file for dashboard functionality -->
     <script src="script.js"></script>
 </body>
 </html>

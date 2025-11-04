@@ -7,62 +7,80 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Navigation bar -->
     <nav class="navbar">
         <div class="container">
             <h1 class="logo"> Volunteer Connect</h1>
             <div class="nav-links">
+                <!-- Display logged-in organization name -->
                 <span id="orgName" class="user-name"></span>
+                <!-- Logout button -->
                 <button onclick="logout()" class="btn btn--secondary btn--sm">Logout</button>
             </div>
         </div>
     </nav>
 
+    <!-- Main dashboard layout -->
     <div class="dashboard-container container">
+        <!-- Sidebar navigation for organization -->
         <aside class="sidebar">
             <nav class="sidebar-nav">
+                <!-- Sidebar buttons for switching between dashboard sections -->
                 <button class="sidebar-link active" data-section="my-opportunities"> My Opportunities</button>
                 <button class="sidebar-link" data-section="create-opportunity"> Create Opportunity</button>
                 <button class="sidebar-link" data-section="applications"> Applications</button>
             </nav>
         </aside>
 
+        <!-- Main content area where selected section is displayed -->
         <main class="main-content">
+            
             <!-- My Opportunities Section -->
             <section id="my-opportunities" class="dashboard-section">
                 <h2>My Posted Opportunities</h2>
+                <!-- Container for displaying all opportunities posted by organization -->
                 <div id="myOpportunitiesList" class="opportunities-grid"></div>
             </section>
 
             <!-- Create Opportunity Section -->
             <section id="create-opportunity" class="dashboard-section hidden">
                 <h2>Create New Opportunity</h2>
+                <!-- Form for creating a new volunteer opportunity -->
                 <form id="createOpportunityForm" class="opportunity-form card">
                     <div class="card__body">
+                        <!-- Input for opportunity title -->
                         <div class="form-group">
                             <label class="form-label">Title *</label>
                             <input type="text" class="form-control" id="oppTitle" required>
                         </div>
+                        <!-- Input for opportunity description -->
                         <div class="form-group">
                             <label class="form-label">Description *</label>
                             <textarea class="form-control" id="oppDescription" rows="4" required></textarea>
                         </div>
+                        <!-- Input for location -->
                         <div class="form-group">
                             <label class="form-label">Location</label>
                             <input type="text" class="form-control" id="oppLocation">
                         </div>
+                        <!-- Input for event date -->
                         <div class="form-group">
                             <label class="form-label">Event Date</label>
                             <input type="date" class="form-control" id="oppDate">
                         </div>
+                        <!-- Input for event time -->
                         <div class="form-group">
                             <label class="form-label">Event Time</label>
                             <input type="time" class="form-control" id="oppTime">
                         </div>
+                        <!-- Input for required skills -->
                         <div class="form-group">
                             <label class="form-label">Required Skills (comma-separated)</label>
                             <input type="text" class="form-control" id="oppSkills" placeholder="e.g., Leadership,Public Speaking, Event Management">
                         </div>
+                        <!-- Submit button for creating new opportunity -->
                         <button type="submit" class="btn btn--primary">Create Opportunity</button>
+                        <!-- Error message display -->
                         <div id="createError" class="error-message"></div>
                     </div>
                 </form>
@@ -71,11 +89,13 @@
             <!-- Applications Section -->
             <section id="applications" class="dashboard-section hidden">
                 <h2>Received Applications</h2>
+                <!-- Container to display applications from volunteers -->
                 <div id="applicationsReceived" class="applications-list"></div>
             </section>
         </main>
     </div>
 
+    <!-- External JavaScript file -->
     <script src="script.js"></script>
 </body>
 </html>

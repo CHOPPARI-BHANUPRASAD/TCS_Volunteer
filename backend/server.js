@@ -1,41 +1,44 @@
+// Importing required modules
 const express = require('express');
-const bcrypt = require('bcrypt');
-const cors = require('cors');
-const path = require('path');
-const db = require('./db');
+const bcrypt = require('bcrypt');  // For password hashing
+const cors = require('cors');      // To allow cross-origin requests
+const path = require('path');      // For handling file paths
+const db = require('./db');        // Database connection file
 
 const app = express();
 const PORT = 5000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+// ============================================
+// MIDDLEWARE SETUP
+// ============================================
+app.use(cors());                                 // Enables Cross-Origin Resource Sharing
+app.use(express.json());                         // Parses incoming JSON requests
+app.use(express.static(path.join(__dirname, 'public'))); // Serves static files (HTML, CSS, JS)
 
 // ============================================
 // VOLUNTEER APIs
 // ============================================
 
-// Register Volunteer
+// Register a new volunteer
 app.post('/api/volunteer/register', async (req, res) => {
   try {
     const { name, email, password, phone, location, bio, skills } = req.body;
     
-    // Validation
+    // Validate required fields
     if (!name || !email || !password) {
       return res.status(400).json({ error: 'Name, email, and password are required' });
     }
 
-    // Check if email already exists
+    // Check if volunteer already exists
     const [existing] = await db.query('SELECT id FROM volunteers WHERE email = ?', [email]);
     if (existing.length > 0) {
       return res.status(409).json({ error: 'Email already registered' });
     }
 
-    // Hash password
+    // Encrypt password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Insert volunteer
+    // Insert volunteer details
     const [result] = await db.query(
       'INSERT INTO volunteers (name, email, password, phone, location, bio) VALUES (?, ?, ?, ?, ?, ?)',
       [name, email, hashedPassword, phone, location, bio]
@@ -43,7 +46,7 @@ app.post('/api/volunteer/register', async (req, res) => {
 
     const volunteerId = result.insertId;
 
-    // Insert skills if provided
+    // If skills provided, link them to volunteer
     if (skills && skills.length > 0) {
       for (const skillName of skills) {
         const [skillResult] = await db.query('SELECT id FROM skills WHERE skill_name = ?', [skillName]);
@@ -54,6 +57,7 @@ app.post('/api/volunteer/register', async (req, res) => {
       }
     }
 
+    // Send success response
     res.status(201).json({ 
       message: 'Volunteer registered successfully', 
       volunteerId 
@@ -64,15 +68,17 @@ app.post('/api/volunteer/register', async (req, res) => {
   }
 });
 
-// Login Volunteer
+// Volunteer login
 app.post('/api/volunteer/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Validate input
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
+    // Find volunteer by email
     const [volunteers] = await db.query('SELECT * FROM volunteers WHERE email = ?', [email]);
     
     if (volunteers.length === 0) {
@@ -80,13 +86,14 @@ app.post('/api/volunteer/login', async (req, res) => {
     }
 
     const volunteer = volunteers[0];
-    const passwordMatch = await bcrypt.compare(password, volunteer.password);
 
+    // Compare entered password with stored hash
+    const passwordMatch = await bcrypt.compare(password, volunteer.password);
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    // Remove password from response
+    // Remove password before sending response
     delete volunteer.password;
 
     res.json({ 
@@ -100,9 +107,10 @@ app.post('/api/volunteer/login', async (req, res) => {
   }
 });
 
-// Get Volunteer Profile
+// Get volunteer profile by ID
 app.get('/api/volunteer/:id', async (req, res) => {
   try {
+    // Fetch basic volunteer details
     const [volunteers] = await db.query(
       'SELECT id, name, email, phone, location, bio, created_at FROM volunteers WHERE id = ?',
       [req.params.id]
@@ -112,7 +120,7 @@ app.get('/api/volunteer/:id', async (req, res) => {
       return res.status(404).json({ error: 'Volunteer not found' });
     }
 
-    // Get volunteer skills
+    // Fetch volunteer skills
     const [skills] = await db.query(
       `SELECT s.skill_name FROM skills s
        JOIN volunteer_skills vs ON s.id = vs.skill_id
@@ -120,6 +128,7 @@ app.get('/api/volunteer/:id', async (req, res) => {
       [req.params.id]
     );
 
+    // Combine volunteer and skill data
     res.json({ 
       ...volunteers[0], 
       skills: skills.map(s => s.skill_name) 
@@ -134,7 +143,7 @@ app.get('/api/volunteer/:id', async (req, res) => {
 // ORGANIZATION APIs
 // ============================================
 
-// Register Organization
+// Register new organization
 app.post('/api/organization/register', async (req, res) => {
   try {
     const { name, email, password, description, location, website } = req.body;
@@ -143,13 +152,16 @@ app.post('/api/organization/register', async (req, res) => {
       return res.status(400).json({ error: 'Name, email, and password are required' });
     }
 
+    // Check existing organization
     const [existing] = await db.query('SELECT id FROM organizations WHERE email = ?', [email]);
     if (existing.length > 0) {
       return res.status(409).json({ error: 'Email already registered' });
     }
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Insert organization record
     const [result] = await db.query(
       'INSERT INTO organizations (name, email, password, description, location, website) VALUES (?, ?, ?, ?, ?, ?)',
       [name, email, hashedPassword, description, location, website]
@@ -165,7 +177,7 @@ app.post('/api/organization/register', async (req, res) => {
   }
 });
 
-// Login Organization
+// Organization login
 app.post('/api/organization/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -174,6 +186,7 @@ app.post('/api/organization/login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
+    // Find organization by email
     const [organizations] = await db.query('SELECT * FROM organizations WHERE email = ?', [email]);
     
     if (organizations.length === 0) {
@@ -204,15 +217,17 @@ app.post('/api/organization/login', async (req, res) => {
 // OPPORTUNITY APIs
 // ============================================
 
-// Create Opportunity
+// Create new volunteering opportunity
 app.post('/api/opportunities', async (req, res) => {
   try {
     const { title, description, organization_id, location, event_date, event_time, required_skills } = req.body;
 
+    // Ensure required fields are present
     if (!title || !description || !organization_id) {
       return res.status(400).json({ error: 'Title, description, and organization are required' });
     }
 
+    // Insert new opportunity
     const [result] = await db.query(
       'INSERT INTO opportunities (title, description, organization_id, location, event_date, event_time, required_skills) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [title, description, organization_id, location, event_date, event_time, required_skills]
@@ -228,11 +243,12 @@ app.post('/api/opportunities', async (req, res) => {
   }
 });
 
-// Get All Opportunities (with filters)
+// Fetch all available opportunities (supports filters)
 app.get('/api/opportunities', async (req, res) => {
   try {
     const { location, skills, status = 'open' } = req.query;
     
+    // Base query with JOIN to include organization name
     let query = `
       SELECT o.*, org.name as organization_name 
       FROM opportunities o
@@ -241,6 +257,7 @@ app.get('/api/opportunities', async (req, res) => {
     `;
     const params = [status];
 
+    // Filter by location or skills if provided
     if (location) {
       query += ' AND o.location LIKE ?';
       params.push(`%${location}%`);
@@ -261,7 +278,7 @@ app.get('/api/opportunities', async (req, res) => {
   }
 });
 
-// Get Single Opportunity
+// Get specific opportunity by ID
 app.get('/api/opportunities/:id', async (req, res) => {
   try {
     const [opportunities] = await db.query(
@@ -283,7 +300,7 @@ app.get('/api/opportunities/:id', async (req, res) => {
   }
 });
 
-// Get Opportunities by Organization
+// Fetch all opportunities created by a specific organization
 app.get('/api/organization/:orgId/opportunities', async (req, res) => {
   try {
     const [opportunities] = await db.query(
@@ -297,7 +314,7 @@ app.get('/api/organization/:orgId/opportunities', async (req, res) => {
   }
 });
 
-// Update Opportunity
+// Update opportunity details
 app.put('/api/opportunities/:id', async (req, res) => {
   try {
     const { title, description, location, event_date, event_time, required_skills, status } = req.body;
@@ -316,7 +333,7 @@ app.put('/api/opportunities/:id', async (req, res) => {
   }
 });
 
-// Delete Opportunity
+// Delete an opportunity
 app.delete('/api/opportunities/:id', async (req, res) => {
   try {
     await db.query('DELETE FROM opportunities WHERE id = ?', [req.params.id]);
@@ -331,7 +348,7 @@ app.delete('/api/opportunities/:id', async (req, res) => {
 // APPLICATION APIs
 // ============================================
 
-// Apply for Opportunity
+// Volunteer applies for an opportunity
 app.post('/api/applications', async (req, res) => {
   try {
     const { volunteer_id, opportunity_id, message } = req.body;
@@ -340,7 +357,7 @@ app.post('/api/applications', async (req, res) => {
       return res.status(400).json({ error: 'Volunteer and opportunity are required' });
     }
 
-    // Check if already applied
+    // Check duplicate applications
     const [existing] = await db.query(
       'SELECT id FROM applications WHERE volunteer_id = ? AND opportunity_id = ?',
       [volunteer_id, opportunity_id]
@@ -365,7 +382,7 @@ app.post('/api/applications', async (req, res) => {
   }
 });
 
-// Get Volunteer Applications
+// Get all applications by a volunteer
 app.get('/api/volunteer/:volunteerId/applications', async (req, res) => {
   try {
     const [applications] = await db.query(
@@ -384,7 +401,7 @@ app.get('/api/volunteer/:volunteerId/applications', async (req, res) => {
   }
 });
 
-// Get Applications for an Opportunity
+// Get all applications for a specific opportunity
 app.get('/api/opportunities/:opportunityId/applications', async (req, res) => {
   try {
     const [applications] = await db.query(
@@ -402,7 +419,7 @@ app.get('/api/opportunities/:opportunityId/applications', async (req, res) => {
   }
 });
 
-// Update Application Status
+// Update application status (pending / accepted / rejected / withdrawn)
 app.put('/api/applications/:id', async (req, res) => {
   try {
     const { status } = req.body;
@@ -423,7 +440,7 @@ app.put('/api/applications/:id', async (req, res) => {
 // UTILITY APIs
 // ============================================
 
-// Get All Skills
+// Fetch all available skills
 app.get('/api/skills', async (req, res) => {
   try {
     const [skills] = await db.query('SELECT * FROM skills ORDER BY skill_name');
@@ -434,7 +451,7 @@ app.get('/api/skills', async (req, res) => {
   }
 });
 
-// Search (combined search across opportunities)
+// General search across opportunities
 app.get('/api/search', async (req, res) => {
   try {
     const { query } = req.query;
@@ -443,6 +460,7 @@ app.get('/api/search', async (req, res) => {
       return res.status(400).json({ error: 'Search query is required' });
     }
 
+    // Search opportunities by title, description, location, or skills
     const [results] = await db.query(
       `SELECT o.*, org.name as organization_name
        FROM opportunities o
@@ -460,12 +478,14 @@ app.get('/api/search', async (req, res) => {
   }
 });
 
-// Health check
+// Health check API (to verify server is running)
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// Start server
+// ============================================
+// START SERVER
+// ============================================
 app.listen(PORT, () => {
   console.log(` Server running on http://localhost:${PORT}`);
 });
